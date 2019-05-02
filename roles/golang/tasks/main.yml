@@ -1,0 +1,19 @@
+---
+- name: Download Go
+  get_url:
+    checksum: sha256:d7d1f1f88ddfe55840712dc1747f37a790cbcaa448f6c9cf51bbe10aa65442f5
+    url: https://dl.google.com/go/go1.12.4.linux-amd64.tar.gz
+    dest: /tmp/go1.12.4.linux-amd64.tar.gz 
+  
+- name: Extract Go
+  become: yes
+  unarchive:
+    remote_src: yes
+    src: /tmp/go1.12.4.linux-amd64.tar.gz 
+    dest: /usr/local/
+
+- name: Add Go to PATH system-wide
+  become: yes
+  lineinfile:
+    path: /etc/profile
+    line: export PATH=$PATH:/usr/local/go/bin

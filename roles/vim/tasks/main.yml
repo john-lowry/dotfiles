@@ -1,0 +1,97 @@
+---
+- name: Install Vim8
+  become: yes
+  shell:  amazon-linux-extras  install vim
+
+- name: Make Pathogen directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "$HOME/.vim/autoload"
+    - "$HOME/.vim/bundle"
+
+- name: Install Pathogen (1/2)
+  uri:
+    url: https://tpo.pe/pathogen.vim
+    dest: "$HOME/.vim/autoload/pathogen.vim"
+    creates: "$HOME/.vim/autoload/pathogen.vim"
+
+- name: Install Pathogen (2/2)
+  blockinfile:
+    path: $HOME/.vimrc
+    create: yes
+    block: |
+      execute pathogen#infect()
+      syntax on
+      filetype plugin indent on
+    marker: "\" {mark} ANSIBLE MANAGED BLOCK "
+
+- name: Install git
+  become: yes
+  package:
+    name: git
+    state: present
+
+- name: Install Github public keys
+  lineinfile:
+    dest: $HOME/.ssh/known_hosts
+    create: yes
+    state: present
+    line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
+    regexp: "^github\\.com"
+
+- name: Install FastFold
+  git:
+    repo: git@github.com:Konfekt/FastFold.git
+    dest: "$HOME/.vim/bundle/FastFold"
+
+- name: Install ctags
+  become: yes
+  package:
+    name: ctags
+    state: present
+
+- name: Install TagBar
+  git: 
+    repo: git@github.com:majutsushi/tagbar.git
+    dest: "$HOME/.vim/bundle/TagBar"
+
+- name: Install Airline
+  git:
+    repo: git@github.com:vim-airline/vim-airline.git
+    dest: "$HOME/.vim/bundle/vim-airline"
+
+- name: Install Airline Themes
+  git:
+    repo: git@github.com:vim-airline/vim-airline-themes.git
+    dest: "$HOME/.vim/bundle/vim-airline-themes"
+
+- name: Set Airline Themes
+  blockinfile:
+    path: $HOME/.vimrc
+    block: |
+      \" airline settings
+      let g:airline_powerline_fonts = 1
+      let g:tender_airline = 1
+      let g:airline_theme = 'solarized'
+      let g:airline_solarized_bg='dark'
+    marker: "\" {mark} ANSIBLE MANAGED BLOCK: Airline-theme "
+
+- name: Install Vim-Go
+  git:
+    repo: git@github.com:fatih/vim-go.git
+    dest: "$HOME/.vim/bundle/vim-go"
+
+#- name: Install GoBinaries for vim
+#  shell: "vim -c GoInstallBinaries -c q"
+
+- name: Install Vim-PanDoc
+  git:
+    repo: git@github.com:vim-pandoc/vim-pandoc.git
+    dest: "$HOME/.vim/bundle/vim-pandoc"
+
+- name: Install Vim-PanDoc-syntax
+  git:
+    repo: git@github.com:vim-pandoc/vim-pandoc-syntax.git
+    dest: "$HOME/.vim/bundle/vim-pandoc-syntax"
