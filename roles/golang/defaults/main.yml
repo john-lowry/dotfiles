@@ -1,2 +1,7 @@
 ---
+go_version: 1.12.5
+go_arch: amd64
+go_os: linux
+go_base_url: https://dl.google.com/go/go
+go_sha256sum: sha256:aea86e3c73495f205929cfebba0d63f1382c8ac59be081b6351681415f4063cf
 # defaults file for golang
