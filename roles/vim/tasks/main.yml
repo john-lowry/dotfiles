@@ -22,9 +22,12 @@
     path: $HOME/.vimrc
     create: yes
     block: |
-      execute pathogen#infect()
-      syntax on
-      filetype plugin indent on
+        syntax on
+        set background=dark
+        set laststatus=2
+        set encoding=utf-8
+        execute pathogen#infect()
+        filetype plugin on
     marker: "\" {mark} ANSIBLE MANAGED BLOCK "
 
 - name: Install git
@@ -71,7 +74,7 @@
   blockinfile:
     path: $HOME/.vimrc
     block: |
-      \" airline settings
+      " airline settings
       let g:airline_powerline_fonts = 1
       let g:tender_airline = 1
       let g:airline_theme = 'solarized'
